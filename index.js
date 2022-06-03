@@ -22,49 +22,62 @@ const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true })
 const users = mongo.db('ForexTelegramDB').collection('Users')
 
 const setTradeTime = async (time, chatId, query) => {
-	const dataFromDB = JSON.parse(
-		JSON.stringify(await getUser(query.message.chat))
-	)
-			const userData = await getUser(query.message.chat)
-			const min = time / 60
-			const max = time / 20
-			const income = Math.floor(Math.random() * (max - min) + min)
-
-			let updatedWallet
-			if (time === 10000) {
-				updatedWallet = dataFromDB.data.wallet - income
-			} else {
-				updatedWallet = dataFromDB.data.wallet + income
-			}
-
-			await updateUser(chatId, {
-				...userData.data,
-				wallet: updatedWallet,
-				deals: dataFromDB.data.deals + 1
-			})
-
-			setTimeout(() => {
-
-				await bot.sendMessage(
-					chatId,
-					`
-Сделка проведена✅\n
-Прибыль ${time === 10000 ? `-${income}` : income}
-							`,
-					{
-						reply_markup: dealKeyboard
-					}
-				)
-			}, time)
+	try {
+		const dataFromDB = JSON.parse(
+			JSON.stringify(await getUser(query.message.chat))
+		)
+				const userData = await getUser(query.message.chat)
+				const min = time / 60
+				const max = time / 20
+				const income = Math.floor(Math.random() * (max - min) + min)
+	
+				let updatedWallet
+				if (time === 10000) {
+					updatedWallet = dataFromDB.data.wallet - income
+				} else {
+					updatedWallet = dataFromDB.data.wallet + income
+				}
+	
+				await updateUser(chatId, {
+					...userData.data,
+					wallet: updatedWallet,
+					deals: dataFromDB.data.deals + 1
+				})
+	
+				setTimeout(() => {
+	
+					await bot.sendMessage(
+						chatId,
+						`
+	Сделка проведена✅\n
+	Прибыль ${time === 10000 ? `-${income}` : income}
+								`,
+						{
+							reply_markup: dealKeyboard
+						}
+					)
+				}, time)
+	} catch (error) {
+		console.log(error)
+	}
+	
 }
 
 const updateUser = async (userId, data) => {
-	await users.updateOne({ id: userId }, { $set: { data } }, { upsert: true })
+	try {
+		await users.updateOne({ id: userId }, { $set: { data } }, { upsert: true })
+	} catch (error) {
+		console.log(error);
+	}
 }
 
 const getUser = async (data) => {
-	const user = await users.findOne({ id: data.id })
-	return user
+	try {
+		const user = await users.findOne({ id: data.id })
+		return user
+	} catch (error) {
+		console.log(error);
+	}
 }
 
 bot.setMyCommands([
