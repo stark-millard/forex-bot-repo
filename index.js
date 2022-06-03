@@ -30,48 +30,50 @@ const setTradeTime = async (time, chatId, query) => {
 		const dataFromDB = JSON.parse(
 			JSON.stringify(await getUser(query.message.chat))
 		)
-				const userData = await getUser(query.message.chat)
-				const min = time / 60
-				const max = time / 20
-				const income = Math.floor(Math.random() * (max - min) + min)
-	
-				let updatedWallet
-				if (time === 10000) {
-					updatedWallet = dataFromDB.data.wallet - income
-				} else {
-					updatedWallet = dataFromDB.data.wallet + income
-				}
-	
-				await updateUser(chatId, {
-					...userData.data,
-					wallet: updatedWallet,
-					deals: dataFromDB.data.deals + 1
-				})
-	
-				setTimeout(() => {
-	
-					await bot.sendMessage(
-						chatId,
-						`
+		const userData = await getUser(query.message.chat)
+		const min = time / 60
+		const max = time / 20
+		const income = Math.floor(Math.random() * (max - min) + min)
+
+		let updatedWallet
+		if (time === 10000) {
+			updatedWallet = dataFromDB.data.wallet - income
+		} else {
+			updatedWallet = dataFromDB.data.wallet + income
+		}
+
+		await updateUser(chatId, {
+			...userData.data,
+			wallet: updatedWallet,
+			deals: dataFromDB.data.deals + 1
+		})
+
+		setTimeout(async () => {
+			await bot.sendMessage(
+				chatId,
+				`
 	Сделка проведена✅\n
 	Прибыль ${time === 10000 ? `-${income}` : income}
 								`,
-						{
-							reply_markup: dealKeyboard
-						}
-					)
-				}, time)
+				{
+					reply_markup: dealKeyboard
+				}
+			)
+		}, time)
 	} catch (error) {
 		console.log(error)
 	}
-	
 }
 
 const updateUser = async (userId, data) => {
 	try {
-		await users.updateOne({ id: userId }, { $set: { data } }, { upsert: true })
+		await users.updateOne(
+			{ id: userId },
+			{ $set: { data } },
+			{ upsert: true }
+		)
 	} catch (error) {
-		console.log(error);
+		console.log(error)
 	}
 }
 
@@ -80,7 +82,7 @@ const getUser = async (data) => {
 		const user = await users.findOne({ id: data.id })
 		return user
 	} catch (error) {
-		console.log(error);
+		console.log(error)
 	}
 }
 
@@ -156,13 +158,13 @@ const chekForTrade = (dataFromDBwallet) => {
 }
 
 app.listen(port, (error) => {
-	if(error) return console.log(error)
+	if (error) return console.log(error)
 	const start = () => {
 		bot.on('message', async (msg) => {
 			const text = msg.text
 			const chatId = msg.chat.id
 			//* Оповещение о верификации
-	
+
 			if (text === '/start') {
 				await updateUser(chatId, {
 					...msg.chat,
@@ -170,7 +172,7 @@ app.listen(port, (error) => {
 					verif: false,
 					deals: 0
 				})
-	
+
 				return bot.sendMessage(
 					chatId,
 					`
@@ -192,25 +194,25 @@ app.listen(port, (error) => {
 				)
 			}
 		})
-	
+
 		//* Начальное подтверждение
-	
+
 		bot.on('callback_query', async (query) => {
 			const chatId = query.message.chat.id
-	
+
 			let text = ''
-	
+
 			if (query.data === 'acceptVerify') {
 				const dataFromDB = JSON.parse(
 					JSON.stringify(await getUser(query.message.chat))
 				)
-	
+
 				const deals = dataFromDB.data.deals
 				const isVerify = dataFromDB.data.verif
-	
+
 				bot.deleteMessage(chatId, query.message.message_id - 1)
 				bot.deleteMessage(chatId, query.message.message_id)
-	
+
 				return bot.sendPhoto(
 					chatId,
 					'./assets/photo_2021-08-31_17-55-13.jpg',
@@ -225,17 +227,17 @@ app.listen(port, (error) => {
 					}
 				)
 			}
-	
+
 			if (query.data === 'refresh') {
 				const dataFromDB = JSON.parse(
 					JSON.stringify(await getUser(query.message.chat))
 				)
-	
+
 				const deals = dataFromDB.data.deals
 				const isVerify = dataFromDB.data.verif
-	
+
 				bot.deleteMessage(chatId, query.message.message_id)
-	
+
 				return bot.sendPhoto(
 					chatId,
 					'./assets/photo_2021-08-31_17-55-13.jpg',
@@ -250,7 +252,7 @@ app.listen(port, (error) => {
 					}
 				)
 			}
-	
+
 			if (query.data === 'wallet') {
 				return bot.sendMessage(
 					chatId,
@@ -259,16 +261,15 @@ app.listen(port, (error) => {
 	🆔Ваш пользовательский ID: ${chatId}
 	💱Валюта: UAH
 	🏦Баланс: ${
-						JSON.parse(
-							JSON.stringify(await getUser(query.message.chat))
-						).data.wallet
-					} UAH`,
+		JSON.parse(JSON.stringify(await getUser(query.message.chat))).data
+			.wallet
+	} UAH`,
 					{
 						reply_markup: walletKeyboard
 					}
 				)
 			}
-	
+
 			if (query.data === 'donate') {
 				return bot.sendPhoto(chatId, './assets/donate.jpg', {
 					caption: `
@@ -282,7 +283,7 @@ app.listen(port, (error) => {
 					reply_markup: deleteKeyboard
 				})
 			}
-	
+
 			if (query.data === 'withdraw') {
 				const dataFromDBwallet = JSON.parse(
 					JSON.stringify(await getUser(query.message.chat))
@@ -304,7 +305,7 @@ app.listen(port, (error) => {
 				chekForWithdraw(dataFromDBwallet, query)
 				return
 			}
-	
+
 			if (query.data === 'information') {
 				return bot.sendMessage(
 					chatId,
@@ -319,13 +320,17 @@ app.listen(port, (error) => {
 					}
 				)
 			}
-	
+
 			if (query.data === 'invest') {
-				return bot.sendMessage(chatId, 'Выберите область инвестирования', {
-					reply_markup: investKeyboard
-				})
+				return bot.sendMessage(
+					chatId,
+					'Выберите область инвестирования',
+					{
+						reply_markup: investKeyboard
+					}
+				)
 			}
-	
+
 			if (query.data === 'investStock') {
 				return bot.sendMessage(
 					chatId,
@@ -335,7 +340,7 @@ app.listen(port, (error) => {
 					}
 				)
 			}
-	
+
 			if (query.data === 'investAmazon') {
 				return bot.sendMessage(
 					chatId,
@@ -388,7 +393,7 @@ app.listen(port, (error) => {
 					}
 				)
 			}
-	
+
 			if (query.data === 'investCrypto') {
 				return bot.sendMessage(
 					chatId,
@@ -398,7 +403,7 @@ app.listen(port, (error) => {
 					}
 				)
 			}
-	
+
 			if (query.data === 'investBitcoin') {
 				return bot.sendMessage(
 					chatId,
@@ -451,12 +456,12 @@ app.listen(port, (error) => {
 					}
 				)
 			}
-	
+
 			if (query.data === 'trade') {
 				const dataFromDBwallet = JSON.parse(
 					JSON.stringify(await getUser(query.message.chat))
 				).data.wallet
-	
+
 				await bot.sendMessage(
 					chatId,
 					`
@@ -471,22 +476,22 @@ app.listen(port, (error) => {
 				chekForTrade(dataFromDBwallet)
 				return
 			}
-	
+
 			if (query.data === '10sec') {
 				setTradeTime(10000, chatId, query)
 				return
 			}
-	
+
 			if (query.data === '30sec') {
 				setTradeTime(30000, chatId, query)
 				return
 			}
-	
+
 			if (query.data === '60sec') {
 				setTradeTime(60000, chatId, query)
 				return
 			}
-	
+
 			if (query.data === 'investFaq') {
 				return bot.sendMessage(
 					chatId,
@@ -503,21 +508,21 @@ app.listen(port, (error) => {
 					}
 				)
 			}
-	
+
 			if (query.data === 'delete') {
 				return bot.deleteMessage(chatId, query.message.message_id)
 			}
-	
+
 			if (query.data === 'doubleDelete') {
 				bot.deleteMessage(chatId, query.message.message_id - 1)
 				return bot.deleteMessage(chatId, query.message.message_id)
 			}
-	
+
 			if (text) {
 				return bot.sendMessage(chatId, text)
 			}
 		})
 	}
-	
+
 	start()
 })
