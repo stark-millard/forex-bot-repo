@@ -139,7 +139,7 @@ const chekForTrade = (dataFromDBwallet) => {
 	bot.addListener('message', async (msg) => {
 		const text = msg.text
 		const chatId = msg.chat.id
-		const minBet = 50
+		const minBet = 500
 
 		if (dataFromDBwallet === 0 && dataFromDBwallet <= minBet)
 			return bot.sendMessage(chatId, 'Пополните баланс', {
@@ -147,7 +147,7 @@ const chekForTrade = (dataFromDBwallet) => {
 			})
 
 		if (parseInt(text) < minBet)
-			return bot.sendMessage(chatId, 'Минимальная ставка: 50 UAH', {
+			return bot.sendMessage(chatId, 'Минимальная ставка: 500 UAH', {
 				reply_markup: doubleDeleteKeyboard
 			})
 
@@ -468,7 +468,7 @@ const start = () => {
 				`
 		Введите сумму ставки в чат:\n
 		Ваш баланс: ${dataFromDBwallet} UAH
-		Минимальная ставка: 50 UAH
+		Минимальная ставка: 500 UAH
 					`,
 				{
 					reply_markup: deleteKeyboard
