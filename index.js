@@ -25,8 +25,6 @@ const setTradeTime = async (time, chatId, query) => {
 	const dataFromDB = JSON.parse(
 		JSON.stringify(await getUser(query.message.chat))
 	)
-	setTimeout(
-		async () => {
 			const userData = await getUser(query.message.chat)
 			const min = time / 60
 			const max = time / 20
@@ -44,20 +42,20 @@ const setTradeTime = async (time, chatId, query) => {
 				wallet: updatedWallet,
 				deals: dataFromDB.data.deals + 1
 			})
-			await bot.sendMessage(
-				chatId,
-				`
+
+			setTimeout(() => {
+
+				await bot.sendMessage(
+					chatId,
+					`
 Сделка проведена✅\n
 Прибыль ${time === 10000 ? `-${income}` : income}
-						`,
-				{
-					reply_markup: dealKeyboard
-				}
-			)
-		},
-
-		time
-	)
+							`,
+					{
+						reply_markup: dealKeyboard
+					}
+				)
+			}, time)
 }
 
 const updateUser = async (userId, data) => {
