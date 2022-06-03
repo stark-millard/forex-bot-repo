@@ -53,8 +53,10 @@ const setTradeTime = async (time, chatId, query) => {
 		})
 
 		setTimeout(() => {
-			bot.deleteMessage(chatId, query.message.message_id - 2)
-			bot.deleteMessage(chatId, query.message.message_id - 1)
+			if (query.message.message_id - 2)
+				bot.deleteMessage(chatId, query.message.message_id - 2)
+			if (query.message.message_id - 1)
+				bot.deleteMessage(chatId, query.message.message_id - 1)
 			bot.deleteMessage(chatId, query.message.message_id)
 			bot.sendMessage(
 				chatId,
@@ -217,7 +219,8 @@ const start = () => {
 				'./assets/photo_2021-08-31_17-55-13.jpg'
 			)
 
-			bot.deleteMessage(chatId, query.message.message_id - 1)
+			if (query.message.message_id - 1)
+				bot.deleteMessage(chatId, query.message.message_id - 1)
 			bot.deleteMessage(chatId, query.message.message_id)
 
 			return bot.sendPhoto(chatId, stream, {
@@ -515,7 +518,8 @@ const start = () => {
 		}
 
 		if (query.data === 'doubleDelete') {
-			bot.deleteMessage(chatId, query.message.message_id - 1)
+			if (query.message.message_id - 1)
+				bot.deleteMessage(chatId, query.message.message_id - 1)
 			return bot.deleteMessage(chatId, query.message.message_id)
 		}
 
