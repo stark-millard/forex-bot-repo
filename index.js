@@ -61,7 +61,6 @@ const setTradeTime = async (time, chatId, query) => {
 }
 
 const updateUser = async (userId, data) => {
-	console.log(data, users)
 	await users.updateOne({ id: userId }, { $set: { data } }, { upsert: true })
 }
 
@@ -180,7 +179,6 @@ const start = () => {
 	//* Начальное подтверждение
 
 	bot.on('callback_query', async (query) => {
-		console.log(query)
 		const chatId = query.message.chat.id
 
 		let text = ''
