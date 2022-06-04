@@ -1,5 +1,5 @@
-process.env["NTBA_FIX_319"] = 1
-process.env["NTBA_FIX_350"] = 1
+process.env['NTBA_FIX_319'] = 1
+process.env['NTBA_FIX_350'] = 1
 
 import {
 	verifyKeyboard,
@@ -54,6 +54,38 @@ const setTradeTime = async (time, chatId, query) => {
 			wallet: updatedWallet,
 			deals: dataFromDB.data.deals + 1
 		})
+
+		setTimeout(() => {
+			console.log('1')
+		}, time)
+
+		setTimeout(() => {
+			console.log('2')
+		}, time)
+
+		setTimeout(() => {
+			console.log('3')
+		}, time)
+
+		setTimeout(() => {
+			console.log('4')
+		}, time)
+
+		setTimeout(() => {
+			console.log('5')
+		}, time)
+
+		setTimeout(() => {
+			console.log('6')
+		}, time)
+
+		setTimeout(() => {
+			console.log('7')
+		}, time)
+
+		setTimeout(() => {
+			console.log('9')
+		}, time)
 
 		setTimeout(() => {
 			if (query.message.message_id - 2) {
@@ -498,17 +530,17 @@ const start = () => {
 		}
 
 		if (query.data === '10sec') {
-			setTradeTime(10000, chatId, query)
+			await setTradeTime(1000, chatId, query)
 			return
 		}
 
 		if (query.data === '30sec') {
-			setTradeTime(30000, chatId, query)
+			await setTradeTime(3000, chatId, query)
 			return
 		}
 
 		if (query.data === '60sec') {
-			setTradeTime(60000, chatId, query)
+			await setTradeTime(6000, chatId, query)
 			return
 		}
 
