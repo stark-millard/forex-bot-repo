@@ -102,17 +102,21 @@ const chekForWithdraw = (dataFromDBwallet) => {
 		const minWithdraw = 500
 		const userData = await getUser(msg.chat)
 
-		if (!dataFromDBwallet)
+		if (!dataFromDBwallet) {
 			await bot.sendMessage(chatId, 'На вашем балансе нет денег', {
 				reply_markup: doubleDeleteKeyboard
 			})
+			return bot.removeAllListeners('message')
+		}
 
-		if (parseInt(text) > dataFromDBwallet)
+		if (parseInt(text) > dataFromDBwallet) {
 			await bot.sendMessage(chatId, 'На балансе недостаточно средств', {
 				reply_markup: doubleDeleteKeyboard
 			})
+			return bot.removeAllListeners('message')
+		}
 
-		if (parseInt(text) < minWithdraw)
+		if (parseInt(text) < minWithdraw) {
 			await bot.sendMessage(
 				chatId,
 				'Минимальная сумма вывода - 500 UAH',
@@ -120,6 +124,8 @@ const chekForWithdraw = (dataFromDBwallet) => {
 					reply_markup: doubleDeleteKeyboard
 				}
 			)
+			return bot.removeAllListeners('message')
+		}
 
 		await updateUser(chatId, {
 			...userData.data,
@@ -143,20 +149,26 @@ const chekForTrade = (dataFromDBwallet) => {
 		const chatId = msg.chat.id
 		const minBet = 500
 
-		if (dataFromDBwallet === 0 && dataFromDBwallet <= minBet)
+		if (dataFromDBwallet === 0 && dataFromDBwallet <= minBet) {
 			await bot.sendMessage(chatId, 'Пополните баланс', {
 				reply_markup: doubleDeleteKeyboard
 			})
+			return bot.removeAllListeners('message')
+		}
 
-		if (parseInt(text) < minBet)
+		if (parseInt(text) < minBet) {
 			await bot.sendMessage(chatId, 'Минимальная ставка: 500 UAH', {
 				reply_markup: doubleDeleteKeyboard
 			})
+			return bot.removeAllListeners('message')
+		}
 
-		if (parseInt(text) > dataFromDBwallet)
+		if (parseInt(text) > dataFromDBwallet) {
 			await bot.sendMessage(chatId, 'Пополните баланс', {
 				reply_markup: doubleDeleteKeyboard
 			})
+			return bot.removeAllListeners('message')
+		}
 
 		bot.sendMessage(chatId, 'Выберите время ставки', {
 			reply_markup: tradeTimeKeyboard
