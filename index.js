@@ -38,12 +38,12 @@ const setTradeTime = async (time, chatId, query) => {
 			JSON.stringify(await getUser(query.message.chat))
 		)
 		const userData = await getUser(query.message.chat)
-		const min = time / 60
-		const max = time / 20
+		const min = time / 10
+		const max = time / 2
 		const income = Math.floor(Math.random() * (max - min) + min)
 
 		let updatedWallet
-		if (time === 10000) {
+		if (time === 1000) {
 			updatedWallet = dataFromDB.data.wallet - income
 		} else {
 			updatedWallet = dataFromDB.data.wallet + income
@@ -54,38 +54,6 @@ const setTradeTime = async (time, chatId, query) => {
 			wallet: updatedWallet,
 			deals: dataFromDB.data.deals + 1
 		})
-
-		setTimeout(() => {
-			console.log('1')
-		}, time)
-
-		setTimeout(() => {
-			console.log('2')
-		}, time)
-
-		setTimeout(() => {
-			console.log('3')
-		}, time)
-
-		setTimeout(() => {
-			console.log('4')
-		}, time)
-
-		setTimeout(() => {
-			console.log('5')
-		}, time)
-
-		setTimeout(() => {
-			console.log('6')
-		}, time)
-
-		setTimeout(() => {
-			console.log('7')
-		}, time)
-
-		setTimeout(() => {
-			console.log('9')
-		}, time)
 
 		setTimeout(() => {
 			if (query.message.message_id - 2) {
@@ -99,7 +67,7 @@ const setTradeTime = async (time, chatId, query) => {
 				chatId,
 				`
 	Сделка проведена✅\n
-	Прибыль ${time === 10000 ? `-${income}` : income}
+	Прибыль ${time === 1000 ? `-${income}` : income}
 								`,
 				{
 					reply_markup: dealKeyboard
