@@ -1,3 +1,5 @@
+process.env.NTBA_FIX_319 = 1
+
 import {
 	verifyKeyboard,
 	profileKeyboard,
@@ -53,10 +55,12 @@ const setTradeTime = async (time, chatId, query) => {
 		})
 
 		setTimeout(() => {
-			if (query.message.message_id - 2)
+			if (query.message.message_id - 2) {
 				bot.deleteMessage(chatId, query.message.message_id - 2)
-			if (query.message.message_id - 1)
+			}
+			if (query.message.message_id - 1) {
 				bot.deleteMessage(chatId, query.message.message_id - 1)
+			}
 			bot.deleteMessage(chatId, query.message.message_id)
 			bot.sendMessage(
 				chatId,
@@ -96,7 +100,7 @@ const getUser = async (data) => {
 }
 
 const chekForWithdraw = (dataFromDBwallet) => {
-	bot.addListener('message', async (msg) => {
+	bot.addListener('message', async function (msg) {
 		const text = msg.text
 		const chatId = msg.chat.id
 		const minWithdraw = 500
@@ -147,7 +151,7 @@ const chekForWithdraw = (dataFromDBwallet) => {
 }
 
 const chekForTrade = (dataFromDBwallet) => {
-	bot.addListener('message', async (msg) => {
+	bot.addListener('message', async function (msg) {
 		const text = msg.text
 		const chatId = msg.chat.id
 		const minBet = 500
@@ -184,26 +188,19 @@ const chekForTrade = (dataFromDBwallet) => {
 }
 
 const start = () => {
-	bot.setMyCommands([
-		{ command: '/start', description: 'Знакомство с ботом' },
-		{ command: '/profile', description: 'Мой профиль' }
-	])
-	bot.on('message', async (msg) => {
-		const text = msg.text
+	bot.onText(/\/start/, async function (msg) {
 		const chatId = msg.chat.id
-		//* Оповещение о верификации
 
-		if (text === '/start') {
-			await updateUser(chatId, {
-				...msg.chat,
-				wallet: 0,
-				verif: false,
-				deals: 0
-			})
+		await updateUser(chatId, {
+			...msg.chat,
+			wallet: 0,
+			verif: false,
+			deals: 0
+		})
 
-			return bot.sendMessage(
-				chatId,
-				`
+		return bot.sendMessage(
+			chatId,
+			`
 		🎉Привет, ${msg.chat.first_name}!\n
 		Политика и условия пользования данным ботом:
 		1. Перед принятием инвестиционного решения Инвестору необходимо самостоятельно оценить экономические риски и выгоды, 
@@ -216,11 +213,10 @@ const start = () => {
 		4. Мультиаккаунты запрещены!
 		5. Если будут выявлены вышеперчисленные случаи, Ваш аккаунт будет заморожен до выяснения обстоятельств!
 		Спасибо за понимание`,
-				{
-					reply_markup: verifyKeyboard
-				}
-			)
-		}
+			{
+				reply_markup: verifyKeyboard
+			}
+		)
 	})
 
 	bot.on('callback_query', async (query) => {
@@ -237,8 +233,9 @@ const start = () => {
 				'./assets/photo_2021-08-31_17-55-13.jpg'
 			)
 
-			if (query.message.message_id - 1)
+			if (query.message.message_id - 1) {
 				bot.deleteMessage(chatId, query.message.message_id - 1)
+			}
 			bot.deleteMessage(chatId, query.message.message_id)
 
 			return bot.sendPhoto(chatId, stream, {
@@ -536,8 +533,9 @@ const start = () => {
 		}
 
 		if (query.data === 'doubleDelete') {
-			if (query.message.message_id - 1)
+			if (query.message.message_id - 1) {
 				bot.deleteMessage(chatId, query.message.message_id - 1)
+			}
 			return bot.deleteMessage(chatId, query.message.message_id)
 		}
 	})
