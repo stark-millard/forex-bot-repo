@@ -102,6 +102,10 @@ const chekForWithdraw = (dataFromDBwallet) => {
 		const minWithdraw = 500
 		const userData = await getUser(msg.chat)
 
+		setTimeout(() => {
+			if (!text) return bot.removeAllListeners('message')
+		}, 5000)
+
 		if (!dataFromDBwallet) {
 			await bot.sendMessage(chatId, 'На вашем балансе нет денег', {
 				reply_markup: doubleDeleteKeyboard
@@ -148,6 +152,10 @@ const chekForTrade = (dataFromDBwallet) => {
 		const text = msg.text
 		const chatId = msg.chat.id
 		const minBet = 500
+
+		setTimeout(() => {
+			if (!text) return bot.removeAllListeners('message')
+		}, 5000)
 
 		if (dataFromDBwallet === 0 && dataFromDBwallet <= minBet) {
 			await bot.sendMessage(chatId, 'Пополните баланс', {
