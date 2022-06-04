@@ -55,7 +55,7 @@ const setTradeTime = async (time, chatId, query) => {
 			deals: dataFromDB.data.deals + 1
 		})
 
-		// setTimeout(() => {
+		setTimeout(() => {
 			if (query.message.message_id - 2) {
 				bot.deleteMessage(chatId, query.message.message_id - 2)
 			}
@@ -63,7 +63,7 @@ const setTradeTime = async (time, chatId, query) => {
 				bot.deleteMessage(chatId, query.message.message_id - 1)
 			}
 			bot.deleteMessage(chatId, query.message.message_id)
-			bot.sendMessage(
+			return bot.sendMessage(
 				chatId,
 				`
 	Сделка проведена✅\n
@@ -73,7 +73,7 @@ const setTradeTime = async (time, chatId, query) => {
 					reply_markup: dealKeyboard
 				}
 			)
-		// }, time)
+		}, time)
 	} catch (error) {
 		console.log(error)
 	}
