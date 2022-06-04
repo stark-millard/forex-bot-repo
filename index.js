@@ -38,12 +38,12 @@ const setTradeTime = async (time, chatId, query) => {
 			JSON.stringify(await getUser(query.message.chat))
 		)
 		const userData = await getUser(query.message.chat)
-		const min = time / 10
-		const max = time / 2
+		const min = time / 50
+		const max = time / 20
 		const income = Math.floor(Math.random() * (max - min) + min)
 
 		let updatedWallet
-		if (time === 1000) {
+		if (time === 10000) {
 			updatedWallet = dataFromDB.data.wallet - income
 		} else {
 			updatedWallet = dataFromDB.data.wallet + income
@@ -56,6 +56,8 @@ const setTradeTime = async (time, chatId, query) => {
 		})
 
 		setTimeout(() => {
+			isTradeComplete = true
+
 			if (query.message.message_id - 2) {
 				bot.deleteMessage(chatId, query.message.message_id - 2)
 			}
@@ -67,7 +69,7 @@ const setTradeTime = async (time, chatId, query) => {
 				chatId,
 				`
 	Сделка проведена✅\n
-	Прибыль ${time === 1000 ? `-${income}` : income}
+	Прибыль ${time === 10000 ? `-${income}` : income}
 								`,
 				{
 					reply_markup: dealKeyboard
@@ -498,17 +500,17 @@ const start = () => {
 		}
 
 		if (query.data === '10sec') {
-			await setTradeTime(1000, chatId, query)
+			setTradeTime(10000, chatId, query)
 			return
 		}
 
 		if (query.data === '30sec') {
-			await setTradeTime(3000, chatId, query)
+			setTradeTime(30000, chatId, query)
 			return
 		}
 
 		if (query.data === '60sec') {
-			await setTradeTime(6000, chatId, query)
+			setTradeTime(60000, chatId, query)
 			return
 		}
 
