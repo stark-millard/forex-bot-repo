@@ -103,17 +103,17 @@ const chekForWithdraw = (dataFromDBwallet) => {
 		const userData = await getUser(msg.chat)
 
 		if (!dataFromDBwallet)
-			return bot.sendMessage(chatId, 'На вашем балансе нет денег', {
+			await bot.sendMessage(chatId, 'На вашем балансе нет денег', {
 				reply_markup: doubleDeleteKeyboard
 			})
 
 		if (parseInt(text) > dataFromDBwallet)
-			return bot.sendMessage(chatId, 'На балансе недостаточно средств', {
+			await bot.sendMessage(chatId, 'На балансе недостаточно средств', {
 				reply_markup: doubleDeleteKeyboard
 			})
 
 		if (parseInt(text) < minWithdraw)
-			return bot.sendMessage(
+			await bot.sendMessage(
 				chatId,
 				'Минимальная сумма вывода - 500 UAH',
 				{
@@ -144,17 +144,17 @@ const chekForTrade = (dataFromDBwallet) => {
 		const minBet = 500
 
 		if (dataFromDBwallet === 0 && dataFromDBwallet <= minBet)
-			return bot.sendMessage(chatId, 'Пополните баланс', {
+			await bot.sendMessage(chatId, 'Пополните баланс', {
 				reply_markup: doubleDeleteKeyboard
 			})
 
 		if (parseInt(text) < minBet)
-			return bot.sendMessage(chatId, 'Минимальная ставка: 500 UAH', {
+			await bot.sendMessage(chatId, 'Минимальная ставка: 500 UAH', {
 				reply_markup: doubleDeleteKeyboard
 			})
 
 		if (parseInt(text) > dataFromDBwallet)
-			return bot.sendMessage(chatId, 'Пополните баланс', {
+			await bot.sendMessage(chatId, 'Пополните баланс', {
 				reply_markup: doubleDeleteKeyboard
 			})
 
@@ -505,7 +505,7 @@ const start = () => {
 		За свои услуги мы взымаем 2.5% прибыли.
 		Все риски вы принимаете на себя.
 		Рекомендуем изучить курсы перед инвестициями, или иметь опытного наставника.
-		Инестиции происходят в краткосрочном режиме.
+		Инвестиции происходят в краткосрочном режиме.
 		Выберите криптовалюту для инвестирования, затем выберите время ставки, дождитесь результатов инвестирования.`,
 				{
 					reply_markup: deleteKeyboard
@@ -522,8 +522,6 @@ const start = () => {
 				bot.deleteMessage(chatId, query.message.message_id - 1)
 			return bot.deleteMessage(chatId, query.message.message_id)
 		}
-
-		bot.answerCallbackQuery({ callback_query_id: query.id })
 	})
 }
 
